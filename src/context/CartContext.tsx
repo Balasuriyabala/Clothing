@@ -8,7 +8,7 @@ interface CartContextType {
   removeFromCart: (productId: string, size: string, color: string) => void;
   updateQuantity: (productId: string, size: string, color: string, quantity: number) => void;
   clearCart: () => void;
-  placeOrder: (address: string) => string;
+  placeOrder: (address: string, coordinates?: { lat: number; lng: number } | null) => string;
   getCartTotal: () => number;
 }
 
@@ -68,8 +68,9 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCart([]);
   };
 
-  const placeOrder = (address: string): string => {
+  const placeOrder = (address: string, coordinates?: { lat: number; lng: number } | null): string => {
     const orderId = Date.now().toString();
+    const trackingId = `TRK${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
     const newOrder: Order = {
       id: orderId,
       userId: 'current-user',
@@ -77,7 +78,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       total: getCartTotal(),
       status: 'pending',
       date: new Date().toISOString(),
-      address
+      address,
+      coordinates: coordinates || undefined,
+      paymentMethod: 'gpay',
+      trackingId
     };
     
     setOrders(prevOrders => [...prevOrders, newOrder]);

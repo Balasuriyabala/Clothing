@@ -25,7 +25,7 @@ const Home: React.FC<HomeProps> = ({ onViewDetails }) => {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <div className="bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold">
-                Free Shipping on Orders $75+
+                Free Shipping on Orders ₹1500+
               </div>
               <div className="border border-yellow-400 text-yellow-400 px-6 py-3 rounded-lg font-semibold hover:bg-yellow-400 hover:text-black transition-colors">
                 Shop New Arrivals
@@ -44,7 +44,7 @@ const Home: React.FC<HomeProps> = ({ onViewDetails }) => {
                 <Truck className="h-8 w-8 text-white" />
               </div>
               <h3 className="text-lg font-semibold mb-2">Free Shipping</h3>
-              <p className="text-gray-600">Free delivery on orders over $75</p>
+              <p className="text-gray-600">Free delivery on orders over ₹1500</p>
             </div>
             
             <div className="text-center">
@@ -59,8 +59,8 @@ const Home: React.FC<HomeProps> = ({ onViewDetails }) => {
               <div className="bg-black rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                 <Shield className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Secure Payment</h3>
-              <p className="text-gray-600">100% secure transactions</p>
+              <h3 className="text-lg font-semibold mb-2">UPI Payment</h3>
+              <p className="text-gray-600">Pay with Google Pay, PhonePe, Paytm</p>
             </div>
             
             <div className="text-center">

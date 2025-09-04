@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, onPageChange }) => {
             className="text-2xl font-bold cursor-pointer hover:text-yellow-400 transition-colors"
             onClick={() => onPageChange('home')}
           >
-            MEN'S WEAR
+            🇮🇳 MEN'S WEAR INDIA
           </div>
           
           <nav className="hidden md:flex space-x-8">

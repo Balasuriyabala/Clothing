@@ -25,10 +25,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onViewDetails }) => 
       
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">{product.name}</h3>
+        {product.sleeveType && (
+          <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-2 capitalize">
+            {product.sleeveType.replace('-', ' ')}
+          </span>
+        )}
         <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
         
         <div className="flex items-center justify-between mb-3">
-          <span className="text-2xl font-bold text-gray-900">${product.price}</span>
+          <span className="text-2xl font-bold text-gray-900">₹{product.price}</span>
           <div className="flex space-x-1">
             {product.colors.slice(0, 3).map(color => (
               <div

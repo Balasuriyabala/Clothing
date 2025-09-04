@@ -11,6 +11,7 @@ export interface Product {
   id: string;
   name: string;
   category: 'shirts' | 'tshirts' | 'trousers' | 'accessories';
+  sleeveType?: 'full-sleeve' | 'half-sleeve' | 'sleeveless';
   price: number;
   image: string;
   description: string;
@@ -34,4 +35,7 @@ export interface Order {
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered';
   date: string;
   address: string;
+  coordinates?: { lat: number; lng: number };
+  paymentMethod: 'gpay' | 'cod';
+  trackingId?: string;
 }

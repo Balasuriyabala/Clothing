@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
-import { User, Package, Settings } from 'lucide-react';
+import OrderTracking from '../Order/OrderTracking';
+import { User, Package, MapPin, Truck } from 'lucide-react';
 
 const UserProfile: React.FC = () => {
   const { user } = useAuth();
   const { orders } = useCart();
   const [activeTab, setActiveTab] = useState('profile');
+  const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -136,17 +138,28 @@ const UserProfile: React.FC = () => {
                 ) : (
                   <div className="space-y-4">
                     {orders.map(order => (
-                      <div key={order.id} className="border border-gray-200 rounded-lg p-4">
+                      <div key={order.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between mb-3">
                           <div>
                             <h3 className="font-semibold text-gray-900">Order #{order.id}</h3>
+                            {order.trackingId && (
+                              <p className="text-sm text-blue-600">Tracking: {order.trackingId}</p>
+                            )}
                             <p className="text-sm text-gray-600">
                               {new Date(order.date).toLocaleDateString()}
                             </p>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                          </span>
+                          <div className="flex items-center space-x-2">
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            </span>
+                            <button
+                              onClick={() => setSelectedOrder(selectedOrder === order.id ? null : order.id)}
+                              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                            >
+                              {selectedOrder === order.id ? 'Hide Details' : 'Track Order'}
+                            </button>
+                          </div>
                         </div>
                         
                         <div className="space-y-2 mb-3">
@@ -156,16 +169,40 @@ const UserProfile: React.FC = () => {
                                 {item.product.name} ({item.size}, {item.color}) x {item.quantity}
                               </span>
                               <span className="text-gray-900">
-                                ${(item.product.price * item.quantity).toFixed(2)}
+                                ₹{(item.product.price * item.quantity).toFixed(2)}
                               </span>
                             </div>
                           ))}
                         </div>
                         
-                        <div className="flex justify-between items-center pt-3 border-t">
-                          <span className="text-sm text-gray-600">Delivery to: {order.address}</span>
-                          <span className="font-semibold text-gray-900">Total: ${order.total.toFixed(2)}</span>
+                        <div className="pt-3 border-t space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600 flex items-center">
+                              <MapPin className="h-4 w-4 mr-1" />
+                              Delivery to: {order.address.substring(0, 50)}...
+                            </span>
+                            <span className="font-semibold text-gray-900">Total: ₹{order.total.toFixed(2)}</span>
+                          </div>
+                          {order.coordinates && (
+                            <div className="flex items-center space-x-2">
+                              <Truck className="h-4 w-4 text-blue-600" />
+                              <a
+                                href={`https://www.google.com/maps?q=${order.coordinates.lat},${order.coordinates.lng}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 text-sm"
+                              >
+                                Track on Map
+                              </a>
+                            </div>
+                          )}
                         </div>
+                        
+                        {selectedOrder === order.id && (
+                          <div className="mt-4 pt-4 border-t">
+                            <OrderTracking order={order} />
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

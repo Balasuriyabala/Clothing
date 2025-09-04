@@ -50,6 +50,11 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onBack }) => {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+              {product.sleeveType && (
+                <span className="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full mt-2 capitalize">
+                  {product.sleeveType.replace('-', ' ')}
+                </span>
+              )}
               <div className="flex items-center mt-2">
                 <div className="flex text-yellow-400">
                   {[...Array(5)].map((_, i) => (
@@ -60,7 +65,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onBack }) => {
               </div>
             </div>
 
-            <div className="text-3xl font-bold text-gray-900">${product.price}</div>
+            <div className="text-3xl font-bold text-gray-900">₹{product.price}</div>
 
             <p className="text-gray-600 leading-relaxed">{product.description}</p>
 

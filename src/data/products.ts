@@ -4,32 +4,47 @@ export const products: Product[] = [
   // Shirts
   {
     id: '1',
-    name: 'Classic White Dress Shirt',
+    name: 'Classic White Formal Shirt',
     category: 'shirts',
-    price: 79.99,
+    sleeveType: 'full-sleeve',
+    price: 1299,
     image: 'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=500',
-    description: 'Premium cotton dress shirt perfect for formal occasions',
+    description: 'Premium cotton formal shirt perfect for office and formal occasions',
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     colors: ['White', 'Light Blue', 'Black'],
     stock: 50
   },
   {
     id: '2',
-    name: 'Casual Linen Shirt',
+    name: 'Casual Cotton Shirt',
     category: 'shirts',
-    price: 65.99,
+    sleeveType: 'half-sleeve',
+    price: 899,
     image: 'https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&cs=tinysrgb&w=500',
-    description: 'Breathable linen shirt for casual summer days',
+    description: 'Comfortable cotton shirt for casual wear',
     sizes: ['S', 'M', 'L', 'XL'],
-    colors: ['Beige', 'Light Grey', 'Navy'],
+    colors: ['Blue', 'Grey', 'Green'],
     stock: 30
+  },
+  {
+    id: '3',
+    name: 'Linen Full Sleeve Shirt',
+    category: 'shirts',
+    sleeveType: 'full-sleeve',
+    price: 1599,
+    image: 'https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&cs=tinysrgb&w=500',
+    description: 'Breathable linen shirt perfect for Indian summers',
+    sizes: ['S', 'M', 'L', 'XL'],
+    colors: ['Beige', 'White', 'Light Grey'],
+    stock: 25
   },
   // T-Shirts
   {
-    id: '3',
+    id: '4',
     name: 'Premium Cotton T-Shirt',
     category: 'tshirts',
-    price: 29.99,
+    sleeveType: 'half-sleeve',
+    price: 599,
     image: 'https://images.pexels.com/photos/8532616/pexels-photo-8532616.jpeg?auto=compress&cs=tinysrgb&w=500',
     description: 'Soft cotton t-shirt with modern fit',
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
@@ -37,22 +52,35 @@ export const products: Product[] = [
     stock: 100
   },
   {
-    id: '4',
-    name: 'Graphic Print Tee',
+    id: '5',
+    name: 'Full Sleeve T-Shirt',
     category: 'tshirts',
-    price: 35.99,
+    sleeveType: 'full-sleeve',
+    price: 699,
     image: 'https://images.pexels.com/photos/8532616/pexels-photo-8532616.jpeg?auto=compress&cs=tinysrgb&w=500',
-    description: 'Trendy graphic print t-shirt',
+    description: 'Comfortable full sleeve t-shirt for all seasons',
     sizes: ['S', 'M', 'L', 'XL'],
-    colors: ['Black', 'White'],
+    colors: ['Black', 'White', 'Maroon'],
     stock: 75
+  },
+  {
+    id: '6',
+    name: 'Sleeveless Vest',
+    category: 'tshirts',
+    sleeveType: 'sleeveless',
+    price: 399,
+    image: 'https://images.pexels.com/photos/8532616/pexels-photo-8532616.jpeg?auto=compress&cs=tinysrgb&w=500',
+    description: 'Cotton sleeveless vest for gym and casual wear',
+    sizes: ['S', 'M', 'L', 'XL'],
+    colors: ['Black', 'White', 'Grey'],
+    stock: 60
   },
   // Trousers
   {
-    id: '5',
+    id: '7',
     name: 'Formal Dress Pants',
     category: 'trousers',
-    price: 89.99,
+    price: 1499,
     image: 'https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=500',
     description: 'Tailored dress pants for professional wear',
     sizes: ['30', '32', '34', '36', '38', '40'],
@@ -60,10 +88,10 @@ export const products: Product[] = [
     stock: 40
   },
   {
-    id: '6',
+    id: '8',
     name: 'Casual Chinos',
     category: 'trousers',
-    price: 59.99,
+    price: 999,
     image: 'https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=500',
     description: 'Comfortable chinos for everyday wear',
     sizes: ['30', '32', '34', '36', '38'],
@@ -72,10 +100,10 @@ export const products: Product[] = [
   },
   // Accessories
   {
-    id: '7',
+    id: '9',
     name: 'Leather Belt',
     category: 'accessories',
-    price: 49.99,
+    price: 799,
     image: 'https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=500',
     description: 'Genuine leather belt with classic buckle',
     sizes: ['32', '34', '36', '38', '40'],
@@ -83,10 +111,10 @@ export const products: Product[] = [
     stock: 25
   },
   {
-    id: '8',
+    id: '10',
     name: 'Classic Watch',
     category: 'accessories',
-    price: 199.99,
+    price: 2999,
     image: 'https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=500',
     description: 'Elegant timepiece for the modern gentleman',
     sizes: ['One Size'],

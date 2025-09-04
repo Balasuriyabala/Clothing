@@ -50,6 +50,13 @@ const productSchema = new mongoose.Schema({
     enum: ['shirts', 'tshirts', 'trousers', 'accessories'], 
     required: true 
   },
+  sleeveType: {
+    type: String,
+    enum: ['full-sleeve', 'half-sleeve', 'sleeveless'],
+    required: function() {
+      return this.category === 'shirts' || this.category === 'tshirts';
+    }
+  },
   price: { type: Number, required: true },
   image: { type: String, required: true },
   description: { type: String, required: true },
@@ -77,7 +84,12 @@ const orderSchema = new mongoose.Schema({
     default: 'pending' 
   },
   shippingAddress: { type: String, required: true },
-  paymentMethod: { type: String, enum: ['card', 'cod'], default: 'cod' },
+  paymentMethod: { type: String, enum: ['gpay', 'cod'], default: 'gpay' },
+  coordinates: {
+    lat: { type: Number },
+    lng: { type: Number }
+  },
+  trackingId: { type: String },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
@@ -188,7 +200,7 @@ app.get('/api/products/:id', async (req, res) => {
 
 app.post('/api/products', upload.single('image'), async (req, res) => {
   try {
-    const { name, category, price, description, sizes, colors, stock } = req.body;
+    const { name, category, sleeveType, price, description, sizes, colors, stock } = req.body;
     
     let imageUrl = '';
     if (req.file) {
@@ -198,6 +210,7 @@ app.post('/api/products', upload.single('image'), async (req, res) => {
     const product = new Product({
       name,
       category,
+      sleeveType: (category === 'shirts' || category === 'tshirts') ? sleeveType : undefined,
       price: parseFloat(price),
       image: imageUrl,
       description,
@@ -215,11 +228,12 @@ app.post('/api/products', upload.single('image'), async (req, res) => {
 
 app.put('/api/products/:id', upload.single('image'), async (req, res) => {
   try {
-    const { name, category, price, description, sizes, colors, stock } = req.body;
+    const { name, category, sleeveType, price, description, sizes, colors, stock } = req.body;
     
     const updateData = {
       name,
       category,
+      sleeveType: (category === 'shirts' || category === 'tshirts') ? sleeveType : undefined,
       price: parseFloat(price),
       description,
       sizes: JSON.parse(sizes || '[]'),
@@ -272,14 +286,19 @@ app.delete('/api/products/:id', async (req, res) => {
 // Order Routes
 app.post('/api/orders', async (req, res) => {
   try {
-    const { userId, items, total, shippingAddress, paymentMethod } = req.body;
+    const { userId, items, total, shippingAddress, paymentMethod, coordinates } = req.body;
+    
+    // Generate tracking ID
+    const trackingId = `TRK${Date.now().toString().slice(-6)}${Math.random().toString(36).substr(2, 3).toUpperCase()}`;
     
     const order = new Order({
       userId,
       items,
       total,
       shippingAddress,
-      paymentMethod
+      paymentMethod,
+      coordinates,
+      trackingId
     });
     
     await order.save();

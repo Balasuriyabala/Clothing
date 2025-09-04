@@ -26,6 +26,13 @@ const productSchema = new mongoose.Schema({
     enum: ['shirts', 'tshirts', 'trousers', 'accessories'], 
     required: true 
   },
+  sleeveType: {
+    type: String,
+    enum: ['full-sleeve', 'half-sleeve', 'sleeveless'],
+    required: function() {
+      return this.category === 'shirts' || this.category === 'tshirts';
+    }
+  },
   price: { type: Number, required: true },
   image: { type: String, required: true },
   description: { type: String, required: true },
@@ -72,30 +79,44 @@ const seedData = async () => {
     const products = [
       // Shirts
       {
-        name: 'Classic White Dress Shirt',
+        name: 'Classic White Formal Shirt',
         category: 'shirts',
-        price: 79.99,
+        sleeveType: 'full-sleeve',
+        price: 1299,
         image: 'https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=500',
-        description: 'Premium cotton dress shirt perfect for formal occasions',
+        description: 'Premium cotton formal shirt perfect for office and formal occasions',
         sizes: ['S', 'M', 'L', 'XL', 'XXL'],
         colors: ['White', 'Light Blue', 'Black'],
         stock: 50
       },
       {
-        name: 'Casual Linen Shirt',
+        name: 'Casual Cotton Shirt',
         category: 'shirts',
-        price: 65.99,
+        sleeveType: 'half-sleeve',
+        price: 899,
         image: 'https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&cs=tinysrgb&w=500',
-        description: 'Breathable linen shirt for casual summer days',
+        description: 'Comfortable cotton shirt for casual wear',
         sizes: ['S', 'M', 'L', 'XL'],
-        colors: ['Beige', 'Light Grey', 'Navy'],
+        colors: ['Blue', 'Grey', 'Green'],
         stock: 30
+      },
+      {
+        name: 'Linen Full Sleeve Shirt',
+        category: 'shirts',
+        sleeveType: 'full-sleeve',
+        price: 1599,
+        image: 'https://images.pexels.com/photos/1040945/pexels-photo-1040945.jpeg?auto=compress&cs=tinysrgb&w=500',
+        description: 'Breathable linen shirt perfect for Indian summers',
+        sizes: ['S', 'M', 'L', 'XL'],
+        colors: ['Beige', 'White', 'Light Grey'],
+        stock: 25
       },
       // T-Shirts
       {
         name: 'Premium Cotton T-Shirt',
         category: 'tshirts',
-        price: 29.99,
+        sleeveType: 'half-sleeve',
+        price: 599,
         image: 'https://images.pexels.com/photos/8532616/pexels-photo-8532616.jpeg?auto=compress&cs=tinysrgb&w=500',
         description: 'Soft cotton t-shirt with modern fit',
         sizes: ['S', 'M', 'L', 'XL', 'XXL'],
@@ -103,20 +124,32 @@ const seedData = async () => {
         stock: 100
       },
       {
-        name: 'Graphic Print Tee',
+        name: 'Full Sleeve T-Shirt',
         category: 'tshirts',
-        price: 35.99,
+        sleeveType: 'full-sleeve',
+        price: 699,
         image: 'https://images.pexels.com/photos/8532616/pexels-photo-8532616.jpeg?auto=compress&cs=tinysrgb&w=500',
-        description: 'Trendy graphic print t-shirt',
+        description: 'Comfortable full sleeve t-shirt for all seasons',
         sizes: ['S', 'M', 'L', 'XL'],
-        colors: ['Black', 'White'],
+        colors: ['Black', 'White', 'Maroon'],
         stock: 75
+      },
+      {
+        name: 'Sleeveless Vest',
+        category: 'tshirts',
+        sleeveType: 'sleeveless',
+        price: 399,
+        image: 'https://images.pexels.com/photos/8532616/pexels-photo-8532616.jpeg?auto=compress&cs=tinysrgb&w=500',
+        description: 'Cotton sleeveless vest for gym and casual wear',
+        sizes: ['S', 'M', 'L', 'XL'],
+        colors: ['Black', 'White', 'Grey'],
+        stock: 60
       },
       // Trousers
       {
         name: 'Formal Dress Pants',
         category: 'trousers',
-        price: 89.99,
+        price: 1499,
         image: 'https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=500',
         description: 'Tailored dress pants for professional wear',
         sizes: ['30', '32', '34', '36', '38', '40'],
@@ -126,7 +159,7 @@ const seedData = async () => {
       {
         name: 'Casual Chinos',
         category: 'trousers',
-        price: 59.99,
+        price: 999,
         image: 'https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=500',
         description: 'Comfortable chinos for everyday wear',
         sizes: ['30', '32', '34', '36', '38'],
@@ -137,7 +170,7 @@ const seedData = async () => {
       {
         name: 'Leather Belt',
         category: 'accessories',
-        price: 49.99,
+        price: 799,
         image: 'https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=500',
         description: 'Genuine leather belt with classic buckle',
         sizes: ['32', '34', '36', '38', '40'],
@@ -147,7 +180,7 @@ const seedData = async () => {
       {
         name: 'Classic Watch',
         category: 'accessories',
-        price: 199.99,
+        price: 2999,
         image: 'https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=500',
         description: 'Elegant timepiece for the modern gentleman',
         sizes: ['One Size'],

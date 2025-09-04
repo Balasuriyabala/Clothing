@@ -40,8 +40,11 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                   
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900">{item.product.name}</h3>
+                    {item.product.sleeveType && (
+                      <p className="text-sm text-gray-500 capitalize">{item.product.sleeveType.replace('-', ' ')}</p>
+                    )}
                     <p className="text-gray-600">Size: {item.size} | Color: {item.color}</p>
-                    <p className="text-lg font-bold text-gray-900">${item.product.price}</p>
+                    <p className="text-lg font-bold text-gray-900">₹{item.product.price}</p>
                   </div>
                   
                   <div className="flex items-center space-x-2">
@@ -62,7 +65,7 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
                   
                   <div className="text-right">
                     <p className="text-lg font-bold text-gray-900">
-                      ${(item.product.price * item.quantity).toFixed(2)}
+                      ₹{(item.product.price * item.quantity).toFixed(2)}
                     </p>
                     <button
                       onClick={() => removeFromCart(item.product.id, item.size, item.color)}
@@ -83,20 +86,20 @@ const Cart: React.FC<CartProps> = ({ onCheckout }) => {
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="text-gray-900">${getCartTotal().toFixed(2)}</span>
+                  <span className="text-gray-900">₹{getCartTotal().toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
-                  <span className="text-gray-900">$9.99</span>
+                  <span className="text-gray-900">₹99</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax</span>
-                  <span className="text-gray-900">${(getCartTotal() * 0.1).toFixed(2)}</span>
+                  <span className="text-gray-900">₹{(getCartTotal() * 0.18).toFixed(2)}</span>
                 </div>
                 <hr className="my-2" />
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total</span>
-                  <span>${(getCartTotal() + 9.99 + (getCartTotal() * 0.1)).toFixed(2)}</span>
+                  <span>₹{(getCartTotal() + 99 + (getCartTotal() * 0.18)).toFixed(2)}</span>
                 </div>
               </div>
               

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
-import { ArrowLeft } from 'lucide-react';
+import GPay from '../Payment/GPay';
+import { ArrowLeft, MapPin, Smartphone } from 'lucide-react';
 
 interface CheckoutProps {
   onBack: () => void;
@@ -12,19 +13,79 @@ const Checkout: React.FC<CheckoutProps> = ({ onBack, onOrderPlaced }) => {
   const { cart, getCartTotal, placeOrder } = useCart();
   const { user } = useAuth();
   const [address, setAddress] = useState(user?.address || '');
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [paymentMethod, setPaymentMethod] = useState('gpay');
+  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+  const [showPayment, setShowPayment] = useState(false);
 
-  const total = getCartTotal() + 9.99 + (getCartTotal() * 0.1);
+  const subtotal = getCartTotal();
+  const shipping = subtotal > 1500 ? 0 : 99;
+  const gst = subtotal * 0.18;
+  const total = subtotal + shipping + gst;
 
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCoordinates({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+          alert('Location captured successfully!');
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          alert('Unable to get location. Please enter address manually.');
+        }
+      );
+    } else {
+      alert('Geolocation is not supported by this browser.');
+    }
+  };
   const handlePlaceOrder = () => {
     if (!address.trim()) {
       alert('Please enter a delivery address');
       return;
     }
 
-    const orderId = placeOrder(address);
+    if (paymentMethod === 'gpay') {
+      setShowPayment(true);
+    } else {
+      const orderId = placeOrder(address, coordinates);
+      onOrderPlaced(orderId);
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    setShowPayment(false);
+    const orderId = placeOrder(address, coordinates);
     onOrderPlaced(orderId);
   };
+
+  const handlePaymentCancel = () => {
+    setShowPayment(false);
+  };
+
+  if (showPayment) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <button
+            onClick={() => setShowPayment(false)}
+            className="flex items-center space-x-2 text-gray-600 hover:text-black mb-8 transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+            <span>Back to Checkout</span>
+          </button>
+          
+          <GPay
+            amount={total}
+            onPaymentSuccess={handlePaymentSuccess}
+            onPaymentCancel={handlePaymentCancel}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -100,28 +161,52 @@ const Checkout: React.FC<CheckoutProps> = ({ onBack, onOrderPlaced }) => {
               <h2 className="text-xl font-bold text-gray-900 mb-4">Payment Method</h2>
               
               <div className="space-y-3">
-                <label className="flex items-center">
+                <label className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
                   <input
                     type="radio"
-                    value="card"
-                    checked={paymentMethod === 'card'}
+                    value="gpay"
+                    checked={paymentMethod === 'gpay'}
                     onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="mr-3"
+                    className="mr-3 text-blue-600"
                   />
-                  <span>Credit/Debit Card</span>
+                  <div className="flex items-center space-x-2">
+                    <Smartphone className="h-5 w-5 text-blue-600" />
+                    <span>Google Pay / UPI</span>
+                  </div>
                 </label>
                 
-                <label className="flex items-center">
+                <label className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
                   <input
                     type="radio"
                     value="cod"
                     checked={paymentMethod === 'cod'}
                     onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="mr-3"
+                    className="mr-3 text-green-600"
                   />
-                  <span>Cash on Delivery</span>
+                  <div className="flex items-center space-x-2">
+                    <span>💰</span>
+                    <span>Cash on Delivery</span>
+                  </div>
                 </label>
               </div>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Location for Delivery</h2>
+              <button
+                onClick={getCurrentLocation}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
+              >
+                <MapPin className="h-5 w-5" />
+                <span>Get Current Location</span>
+              </button>
+              {coordinates && (
+                <div className="mt-3 p-3 bg-green-50 rounded-lg">
+                  <p className="text-sm text-green-800">
+                    📍 Location captured: {coordinates.lat.toFixed(6)}, {coordinates.lng.toFixed(6)}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -136,7 +221,7 @@ const Checkout: React.FC<CheckoutProps> = ({ onBack, onOrderPlaced }) => {
                       {item.product.name} ({item.size}, {item.color}) x {item.quantity}
                     </span>
                     <span className="text-gray-900">
-                      ${(item.product.price * item.quantity).toFixed(2)}
+                      ₹{(item.product.price * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 ))}
@@ -147,28 +232,37 @@ const Checkout: React.FC<CheckoutProps> = ({ onBack, onOrderPlaced }) => {
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="text-gray-900">${getCartTotal().toFixed(2)}</span>
+                  <span className="text-gray-900">₹{getCartTotal().toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
-                  <span className="text-gray-900">$9.99</span>
+                  <span className="text-gray-900">
+                    {shipping === 0 ? 'FREE' : `₹${shipping}`}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Tax</span>
-                  <span className="text-gray-900">${(getCartTotal() * 0.1).toFixed(2)}</span>
+                  <span className="text-gray-600">GST (18%)</span>
+                  <span className="text-gray-900">₹{gst.toFixed(2)}</span>
                 </div>
                 <hr className="my-2" />
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
+                {shipping === 0 && (
+                  <p className="text-sm text-green-600 text-center">🎉 You saved ₹99 on shipping!</p>
+                )}
               </div>
               
               <button
                 onClick={handlePlaceOrder}
-                className="w-full bg-black text-white py-3 px-6 rounded-md hover:bg-gray-800 transition-colors font-medium"
+                className={`w-full py-3 px-6 rounded-md font-medium transition-colors ${
+                  paymentMethod === 'gpay' 
+                    ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                    : 'bg-black text-white hover:bg-gray-800'
+                }`}
               >
-                Place Order
+                {paymentMethod === 'gpay' ? 'Pay with Google Pay' : 'Place Order (COD)'}
               </button>
             </div>
           </div>
